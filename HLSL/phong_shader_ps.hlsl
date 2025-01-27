@@ -16,7 +16,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 	float3 L = normalize(-light_direction.xyz);
 
 	float3 diffuse = color.rgb * max(0, dot(N, L) * 0.5f + 0.5f);
-	float3 specular = 0; // TODO	スペキュラの計算を見直す
+	float3 specular = color.rgb * pow(max(dot(-E, reflect(L, N)), 0), 128) * ks.rgb; // TODO	スペキュラの計算を見直す
 	float3 ambient = color.rgb * 0.2;
 
 	return float4(diffuse + specular + ambient, alpha) * pin.color;
