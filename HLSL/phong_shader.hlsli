@@ -24,22 +24,12 @@ cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 	float4 camera_position;
 };
 
-//cbuffer LIGHT_CONSTANT_BUFFER : register(b2)
-//{
-//	float4 ambient_color;
-//	float4 directional_light_direction;
-//	float4 directional_light_color;
-//	/*point_lights point_light[8];
-//	spot_lights spot_light[8];*/
-//};
-
 cbuffer HEMISPHERE_LIGHT_CONSTANT_BUFFER : register(b4)
 {
 	float4 sky_color;
 	float4 ground_color;
 	float4 hemisphere_weight;
 };
-
 
 cbuffer FOG_CONSTNT_BUFFER:register(b5)
 {

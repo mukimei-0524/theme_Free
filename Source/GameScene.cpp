@@ -150,7 +150,7 @@ void GameScene::render()
 		DirectX::XMStoreFloat4x4(&sc.viewProjection, View * Projection);
 
 		// ライト方向（下方向）
-		sc.lightDirection = { 0.0f, -1.0f, 0.0f, 0.0f };
+		sc.lightDirection = { 0.0f, -1.0f, 0.0f, 0.0f };	//TODO:IMGUIで扱えるようにする
 		sc.cameraPosition.x = camera->getEye()->x;
 		sc.cameraPosition.y = camera->getEye()->y;
 		sc.cameraPosition.z = camera->getEye()->z;
