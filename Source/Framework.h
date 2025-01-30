@@ -59,6 +59,41 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> ramp_sampler_state;
 
+	////点光源(スポットライト)
+	//struct point_lights
+	//{
+	//	DirectX::XMFLOAT4 position{ 0, 0, 0, 0 };
+	//	DirectX::XMFLOAT4 color{ 1, 1, 1, 1 };
+	//	float range{ 0 };
+	//	DirectX::XMFLOAT3 dummy;
+	//};
+	//struct spot_lights
+	//{
+	//	DirectX::XMFLOAT4 position{ 0, 0, 0, 0 };
+	//	DirectX::XMFLOAT4 direction{ 0, 0, 1, 0 };
+	//	DirectX::XMFLOAT4 color{ 1, 1, 1, 1 };
+	//	float range{ 0 };
+	//	float innerCorn{ 0.99f };
+	//	float outerCorn{ 0.9f };
+	//	float dummy;
+	//};
+
+	////ライト用定数
+	//struct light_constants
+	//{
+	//	DirectX::XMFLOAT4 ambient_color;
+	//	DirectX::XMFLOAT4 directional_light_direction;
+	//	DirectX::XMFLOAT4 directional_light_color;
+	//	point_lights point_light[8];
+	//	spot_lights spot_light[8];
+	//};
+
+	//Microsoft::WRL::ComPtr<ID3D11Buffer> light_constant_buffer;
+	//DirectX::XMFLOAT4 ambient_color{ 0.2f, 0.2f, 0.2f, 0.2f };
+	//DirectX::XMFLOAT4 directional_light_direction{ 0.0f, -1.0f, 1.0f, 1.0f };
+	//DirectX::XMFLOAT4 directional_light_color{ 1.0f, 1.0f, 1.0f, 1.0f };
+	//point_lights point_light[8];
+	//spot_lights spot_light[8];
 public:
 	Framework(HWND hwnd);
 	~Framework();
