@@ -37,6 +37,8 @@ private:
 	// ジャンプ入力処理
 	void inputJump();
 
+	void inputThrow();
+
 	// 入力による弾発射処理
 	void inputLaunchBullet();
 
@@ -46,6 +48,7 @@ protected:
 
 private:
 	SkinnedMesh* model = nullptr;
+	SkinnedMesh* throw_mdl = nullptr;
 
 	// 移動スピード
 	float moveSpeed = 5.0f;

@@ -13,6 +13,7 @@
 Player::Player()
 {
 	model = new SkinnedMesh(DeviceManager::instance()->getDevice(), ".\\Resources\\Model\\Jummo\\Jummo.cereal");
+	throw_mdl = new SkinnedMesh(DeviceManager::instance()->getDevice(), ".\\Resources\\Model\\Sword\\Sword.cereal");
 
 	const float scale_fcator = 0.01f;	// モデルが大きいのでスケール調整
 	scale = { scale_fcator, scale_fcator, scale_fcator };
@@ -35,6 +36,12 @@ Player::~Player()
 		delete model;
 		model = nullptr;
 	}
+
+	if (throw_mdl != nullptr)
+	{
+		delete throw_mdl;
+		throw_mdl = nullptr;
+	}
 }
 
 // 更新処理
@@ -45,6 +52,8 @@ void Player::update(float elapsedTime)
 
 	// ジャンプ入力処理
 	inputJump();
+
+	inputThrow();
 
 	// 入力による弾発射処理
 	inputLaunchBullet();
@@ -62,7 +71,17 @@ void Player::update(float elapsedTime)
 // 描画処理
 void Player::render(ID3D11DeviceContext* dc)
 {
+	GamePad* gamePad = InputManager::instance()->getGamePad();
 	model->render(dc, transform, { 1.0f,1.0f,1.0f,1.0f }, nullptr);
+	if (gamePad->getButtonDown() & gamePad->BTN_X)
+	{
+		DirectX::XMFLOAT3 pos;
+		pos.x = position.x;
+		pos.y = position.y + height * 0.5f;
+		pos.z = position.z;
+
+		model->render(dc, transform, { 1.0f,1.0f,1.0f,1.0f }, nullptr);
+	}
 }
 
 // デバッグ用の描画
@@ -233,6 +252,13 @@ void Player::inputJump()
 			jump(jumpSpeed);
 		}
 	}
+}
+
+// 投げる入力処理
+void Player::inputThrow()
+{
+	GamePad* gamePad = InputManager::instance()->getGamePad();
+
 }
 
 // 入力による弾発射処理
