@@ -160,6 +160,8 @@
     <ClCompile Include="Source\Audio\Audio.cpp" />
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\AudioResource.cpp" />
+    <ClCompile Include="Source\Bullet.cpp" />
+    <ClCompile Include="Source\BulletManager.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CameraController.cpp" />
     <ClCompile Include="Source\Character.cpp" />
@@ -190,6 +192,7 @@
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\StageMain.cpp" />
     <ClCompile Include="Source\StageManager.cpp" />
+    <ClCompile Include="Source\StraightBullet.cpp" />
     <ClCompile Include="Source\TitleScene.cpp" />
     <ClCompile Include="Utils\imgui\imgui.cpp" />
     <ClCompile Include="Utils\imgui\imgui_demo.cpp" />
@@ -201,6 +204,8 @@
     <ClInclude Include="Source\Audio\Audio.h" />
     <ClInclude Include="Source\Audio\AudioManager.h" />
     <ClInclude Include="Source\Audio\AudioResource.h" />
+    <ClInclude Include="Source\Bullet.h" />
+    <ClInclude Include="Source\BulletManager.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CameraController.h" />
     <ClInclude Include="Source\Character.h" />
@@ -235,6 +240,7 @@
     <ClInclude Include="Source\Stage.h" />
     <ClInclude Include="Source\StageMain.h" />
     <ClInclude Include="Source\StageManager.h" />
+    <ClInclude Include="Source\StraightBullet.h" />
     <ClInclude Include="Source\TitleScene.h" />
     <ClInclude Include="Utils\imgui\imconfig.h" />
     <ClInclude Include="Utils\imgui\imgui.h" />

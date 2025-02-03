@@ -1,10 +1,9 @@
 #include "Graphics/GraphicsManager.h"
 #include "Input/InputManager.h"
 #include "Graphics/ImGuiRenderer.h" 
-
 #include "DeviceManager.h"
 #include "EnemyManager.h"
-
+#include "StraightBullet.h"
 #include "Collision.h"
 #include "Player.h"
 #include "Camera.h"
@@ -13,7 +12,6 @@
 Player::Player()
 {
 	model = new SkinnedMesh(DeviceManager::instance()->getDevice(), ".\\Resources\\Model\\Jummo\\Jummo.cereal");
-	throw_mdl = new SkinnedMesh(DeviceManager::instance()->getDevice(), ".\\Resources\\Model\\Sword\\Sword.cereal");
 
 	const float scale_fcator = 0.01f;	// モデルが大きいのでスケール調整
 	scale = { scale_fcator, scale_fcator, scale_fcator };
@@ -36,12 +34,6 @@ Player::~Player()
 		delete model;
 		model = nullptr;
 	}
-
-	if (throw_mdl != nullptr)
-	{
-		delete throw_mdl;
-		throw_mdl = nullptr;
-	}
 }
 
 // 更新処理
@@ -53,16 +45,20 @@ void Player::update(float elapsedTime)
 	// ジャンプ入力処理
 	inputJump();
 
-	inputThrow();
-
 	// 入力による弾発射処理
 	inputLaunchBullet();
 
 	// 速度処理更新
 	updateVelocity(elapsedTime);
 
+	// 弾更新処理
+	bulletMgr.update(elapsedTime);
+
 	// プレイヤーと敵との衝突処置
 	collisionPlayerAndEnemies();
+
+	// 弾と敵の衝突処理
+	collisionBulletsAndEnemies();
 
 	// ワールド行列の更新
 	updateTransform();
@@ -71,29 +67,22 @@ void Player::update(float elapsedTime)
 // 描画処理
 void Player::render(ID3D11DeviceContext* dc)
 {
-	GamePad* gamePad = InputManager::instance()->getGamePad();
 	model->render(dc, transform, { 1.0f,1.0f,1.0f,1.0f }, nullptr);
-	if (gamePad->getButtonDown() & gamePad->BTN_X)
-	{
-		DirectX::XMFLOAT3 pos;
-		pos.x = position.x;
-		pos.y = position.y + height * 0.5f;
-		pos.z = position.z;
 
-		model->render(dc, transform, { 1.0f,1.0f,1.0f,1.0f }, nullptr);
-	}
+	// 弾描画処理
+	bulletMgr.render(dc);
 }
 
 // デバッグ用の描画
 void Player::drawDebugGui()
 {
 	ImGui::Begin("Player");
-	
+
 	// 位置
 	ImGui::InputFloat3("Position", &position.x);
-	
+
 	// 回転
-	DirectX::XMFLOAT3 a{DirectX::XMConvertToDegrees(angle.x), DirectX::XMConvertToDegrees(angle.y) , DirectX::XMConvertToDegrees(angle.z) };
+	DirectX::XMFLOAT3 a{ DirectX::XMConvertToDegrees(angle.x), DirectX::XMConvertToDegrees(angle.y) , DirectX::XMConvertToDegrees(angle.z) };
 	ImGui::InputFloat3("Angle", &a.x);
 	angle = { DirectX::XMConvertToRadians(a.x),DirectX::XMConvertToRadians(a.y), DirectX::XMConvertToRadians(a.z) };
 
@@ -110,6 +99,9 @@ void Player::drawDrawPrimitive()
 
 	// 衝突判定用のデバッグ用円柱を描画
 	debugRenderer->drawCylinder(position, radius, height, { 0, 0, 0, 1 });
+
+	// 弾デバッグプリミティブ描画
+	bulletMgr.drawDebugPrimitive();
 }
 
 // 入力値から移動ベクトルを取得
@@ -152,12 +144,8 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 	vec.x = cameraFrontX * ay + cameraRightX * ax;
 	vec.z = cameraFrontZ * ay + cameraRightZ * ax;
 
-	// Y 軸方向には移動しない。
-	vec.y = 0.0f;
-
 	return vec;
 }
-
 
 
 // 移動入力処理
@@ -238,6 +226,57 @@ void Player::collisionPlayerAndEnemies()
 	}
 }
 
+// 弾と敵の衝突処理
+void Player::collisionBulletsAndEnemies()
+{
+	EnemyManager* enemyMgr = EnemyManager::instance();
+
+	// 全ての弾と全ての敵を総当たりで衝突処理
+	int bulletCount = bulletMgr.getBulletCount();
+	int enemyCount = enemyMgr->getEnemyCount();
+	for (int i = 0; i < bulletCount; ++i)
+	{
+		Bullet* bullet = bulletMgr.getBullet(i);
+
+		for (int j = 0; j < enemyCount; ++j)
+		{
+			Enemy* enemy = enemyMgr->getEnemy(j);
+
+			// 衝突処理
+			DirectX::XMFLOAT3 outVec;
+			if (Collision::intersectSphereAndCylinder(
+				*bullet->getPosition(),
+				bullet->getRadius(),
+				*enemy->getPosition(),
+				enemy->getRadius(),
+				enemy->getHeight(),
+				outVec))
+			{
+				int damage = 1;
+				if (enemy->applyDamage(damage, 0.1f))
+				{
+					// 吹き飛ばし
+					float power = 10.0f;
+					DirectX::XMFLOAT3 impulse;
+					impulse.x = outVec.x * power;
+					impulse.y = power * 0.5f;
+					impulse.z = outVec.z * power;
+					enemy->addImpulse(impulse);
+
+					// ヒットエフェクトの再生
+					DirectX::XMFLOAT3 enePos = *enemy->getPosition();
+					enePos.y += enemy->getHeight() * 0.5f;
+					Effekseer::Handle handle = hitEffect->play(&enePos, 0.5f);
+
+
+					// 弾の破棄
+					bullet->destroy();
+				}
+			}
+		}
+	}
+}
+
 // ジャンプ入力処理
 void Player::inputJump()
 {
@@ -252,13 +291,6 @@ void Player::inputJump()
 			jump(jumpSpeed);
 		}
 	}
-}
-
-// 投げる入力処理
-void Player::inputThrow()
-{
-	GamePad* gamePad = InputManager::instance()->getGamePad();
-
 }
 
 // 入力による弾発射処理
@@ -280,36 +312,11 @@ void Player::inputLaunchBullet()
 		pos.x = position.x;
 		pos.y = position.y + height * 0.5f;
 		pos.z = position.z;
-	}
 
-	// ホーミング弾発射
-	if (gamePad->getButtonDown() & GamePad::BTN_Y)
-	{
-		// 前方向
-		DirectX::XMFLOAT3 dir;
-		dir.x = sinf(angle.y);
-		dir.y = 0.0f;
-		dir.z = cosf(angle.y);
-
-		// 発射位置（プレイヤーの腰あたり
-		DirectX::XMFLOAT3 pos;
-		pos.x = position.x;
-		pos.y = position.y + height * 0.5f;
-		pos.z = position.z;
-
-		// ターゲット
-		DirectX::XMFLOAT3 target;
-		target.x = pos.x + dir.x * 1000.0f;
-		target.y = pos.y + dir.y * 1000.0f;
-		target.z = pos.z + dir.z * 1000.0f;
-
-		// 一番近くの敵を取得
-		Enemy* enemy = EnemyManager::instance()->searchEnemy(&position);
-		if (enemy != nullptr)
-		{
-			target = *enemy->getPosition();
-			target.y += enemy->getHeight() * 0.5f;
-		}
+		// 発射
+		StraightBullet* bullet = new StraightBullet(&bulletMgr);
+		bullet->setDirection(dir);
+		bullet->setPosition(pos);
 	}
 }
 

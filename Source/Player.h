@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Graphics/SkinnedMesh.h"
-#include "Effect/Effect.h"
-
 #include "Character.h"
+#include "BulletManager.h"
+#include "Effect/Effect.h"
 
 // プレイヤー
 class Player : public Character
@@ -34,10 +34,11 @@ private:
 	// プレイヤーと敵との衝突処理
 	void collisionPlayerAndEnemies();
 
+	// 弾と敵の衝突処理
+	void collisionBulletsAndEnemies();
+
 	// ジャンプ入力処理
 	void inputJump();
-
-	void inputThrow();
 
 	// 入力による弾発射処理
 	void inputLaunchBullet();
@@ -48,7 +49,6 @@ protected:
 
 private:
 	SkinnedMesh* model = nullptr;
-	SkinnedMesh* throw_mdl = nullptr;
 
 	// 移動スピード
 	float moveSpeed = 5.0f;
@@ -64,6 +64,8 @@ private:
 	DirectX::XMFLOAT3 velocity = { 0,0,0 };
 	int jumpCount = 0;	// ジャンプ回数
 	int jumpLimit = 2;	// ジャンプ制限（最大ジャンプ数）
+	// 弾管理
+	BulletManager bulletMgr;
 	// ヒットエフェクト
 	Effect* hitEffect = nullptr;
 };

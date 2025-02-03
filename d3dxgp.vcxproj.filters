@@ -40,6 +40,9 @@
     <Filter Include="Source\others">
       <UniqueIdentifier>{5e313b6a-6dca-4c20-a529-4cfd1bef85b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Bullet">
+      <UniqueIdentifier>{3ec44cbe-fd9e-4015-b9bc-9bd10e4088d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Audio\Audio.cpp">
@@ -158,6 +161,15 @@
     </ClCompile>
     <ClCompile Include="Source\MathCulc.cpp">
       <Filter>Source\others</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Bullet.cpp">
+      <Filter>Source\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BulletManager.cpp">
+      <Filter>Source\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StraightBullet.cpp">
+      <Filter>Source\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +304,15 @@
     </ClInclude>
     <ClInclude Include="Source\misc.h">
       <Filter>Source\others</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Bullet.h">
+      <Filter>Source\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BulletManager.h">
+      <Filter>Source\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\StraightBullet.h">
+      <Filter>Source\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
