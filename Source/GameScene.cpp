@@ -1,3 +1,4 @@
+#define USE_IMGUI
 
 #include "GameScene.h"
 #include "misc.h"
@@ -116,6 +117,15 @@ void GameScene::update(float elapsedTime)
 
 	// エフェクト更新処理
 	EffectManager::instance()->update(elapsedTime);
+
+#ifdef USE_IMGUI	
+	ImGui::Begin("ImGUI");
+
+	//ImGui::SliderFloat("speqler", &scene_constants, 0.0f, 1.0f, 0.0f);
+
+	ImGui::End();
+#endif
+
 }
 
 // 描画処理

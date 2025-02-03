@@ -8,6 +8,7 @@
 #include "CameraController.h"
 #include "Scene.h"
 #include "Graphics/Sprite.h"
+#include "Framework.h"
 
 // ゲームシーン
 class GameScene : public Scene
@@ -48,6 +49,7 @@ private:
 	};
 	// シーン定数バッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
+	SceneConstants scene_constants;
 
 private:
 	Player* player = nullptr;
