@@ -33,7 +33,7 @@ void GameScene::initialize()
 	DeviceManager* deviceMgr = DeviceManager::instance();
 	Camera* camera = Camera::instance();
 	camera->setLookAt(
-		DirectX::XMFLOAT3(0, 10, -10),	// カメラの視点（位置）
+		DirectX::XMFLOAT3(10, 2, 0),	// カメラの視点（位置）
 		DirectX::XMFLOAT3(0, 0, 0),		// カメラの注視点（ターゲット）
 		DirectX::XMFLOAT3(0, 1, 0)		// カメラの上方向
 	);
